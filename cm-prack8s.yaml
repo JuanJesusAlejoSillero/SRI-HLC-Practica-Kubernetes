@@ -1,0 +1,8 @@
+apiVersion: v1
+data:
+  basededatos: bookmedik
+  mysql_usuario: bookmedik
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: cm-prack8s

@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bookmedik
+  labels:
+    app: bookmedik
+    tier: frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: bookmedik
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        app: bookmedik
+        tier: frontend
+    spec:
+      containers:
+      - name: bookmedik-prack8s
+        image: githubemail1asir/bookmedik:v1_3
+        env:
+          - name: USUARIO_BOOKMEDIK
+            valueFrom:
+              configMapKeyRef:
+                name: cm-prack8s
+                key: mysql_usuario
+          - name: CONTRA_BOOKMEDIK
+            valueFrom:
+              secretKeyRef:
+                name: secret-prack8s
+                key: mysql_password
+          - name: DATABASE_HOST
+            value: mariadb
+          - name: NOMBRE_DB
+            valueFrom:
+              configMapKeyRef:
+                name: cm-prack8s
+                key: basededatos
+        ports:
+          - name: bookmedik-port
+            containerPort: 80

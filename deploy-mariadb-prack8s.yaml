@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mariadb
+  labels:
+    app: mariadb
+    tier: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mariadb
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: mariadb
+        tier: backend
+    spec:
+      volumes:
+        - name: mariadb-data
+          persistentVolumeClaim:
+            claimName: pvc-mariadb-prack8s
+      containers:
+        - name: mariadb-prack8s
+          image: mariadb:10.5
+          env:
+            - name: MARIADB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret-prack8s
+                  key: rootpass
+            - name: MARIADB_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: cm-prack8s
+                  key: basededatos
+            - name: MARIADB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: cm-prack8s
+                  key: mysql_usuario
+            - name: MARIADB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret-prack8s
+                  key: mysql_password
+          ports:
+            - name: mariadb-port
+              containerPort: 3306
+          volumeMounts:
+            - mountPath: "/var/lib/mysql"
+              name: mariadb-data
